@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
+import DeleteRecipeButton from '@/app/components/DeleteRecipeButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -107,6 +108,9 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
           </div>
         </section>
       )}
+      <div className="mt-8 pt-6 border-t">
+        <DeleteRecipeButton id={id} redirectAfter />
+      </div>
     </main>
   )
 }

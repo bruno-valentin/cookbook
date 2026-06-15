@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
+import DeleteRecipeButton from '@/app/components/DeleteRecipeButton'
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
@@ -15,13 +16,13 @@ export default async function Home() {
       </div>
 
       {recipes && recipes.length === 0 && (
-        <p className="text-gray-500 text-center py-16">Aucune recette pour l'instant. Ajoutez-en une !</p>
+        <p className="text-gray-500 text-center py-16">{"Aucune recette pour l'instant. Ajoutez-en une !"}</p>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {recipes && recipes.map((recipe) => (
-          <Link href={`/recipe/${recipe.id}`} key={recipe.id}>
-            <div className="border rounded-xl p-5 hover:shadow-md transition cursor-pointer">
+          <div key={recipe.id} className="border rounded-xl overflow-hidden hover:shadow-md transition">
+            <Link href={`/recipe/${recipe.id}`} className="block p-5 cursor-pointer">
               <h2 className="text-xl font-semibold mb-1">{recipe.title}</h2>
               <p className="text-gray-500 text-sm mb-4 line-clamp-2">{recipe.description}</p>
               <div className="flex gap-4 text-sm">
@@ -30,8 +31,11 @@ export default async function Home() {
                 <span>⭐ {recipe.yuka_score || '—'}/100</span>
                 <span>💶 {recipe.price_per_portion ? `${recipe.price_per_portion}€` : '—'}</span>
               </div>
+            </Link>
+            <div className="flex justify-end px-5 pb-3">
+              <DeleteRecipeButton id={recipe.id} />
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </main>
