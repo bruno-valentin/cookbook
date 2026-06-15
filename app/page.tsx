@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
+export const dynamic = 'force-dynamic'
 
 export default async function Home() {
   const { data: recipes } = await supabase.from('recipes').select('*').order('created_at', { ascending: false })
