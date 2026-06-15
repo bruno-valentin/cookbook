@@ -1,21 +1,26 @@
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 
-export default async function RecipePage({ params }: { params: { id: string } }) {
-  const { data: recipe } = await supabase.from('recipes').select('*').eq('id', params.id).single()
+export const dynamic = 'force-dynamic'
 
-  if (!recipe) return <div className="p-8">Recette introuvable.</div>
+export default async function RecipePage({ params }: { params: { id: string } }) {
+  const { data: recipe, error } = await supabase.from('recipes').select('*').eq('id', params.id).single()
+
+  if (error || !recipe) return (
+    <div className="p-8">
+      <p>Recette introuvable.</p>
+      <p className="text-sm text-red-500 mt-2">{error?.message}</p>
+      <p className="text-sm text-gray-400 mt-1">ID: {params.id}</p>
+    </div>
+  )
 
   const totalTime = (recipe.prep_time_min || 0) + (recipe.cook_time_min || 0)
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
       <Link href="/" className="text-sm text-gray-500 hover:underline mb-4 block">← Retour</Link>
-
       <h1 className="text-3xl font-bold mb-2">{recipe.title}</h1>
       <p className="text-gray-500 mb-6">{recipe.description}</p>
-
-      {/* Métriques */}
       <div className="grid grid-cols-4 gap-3 mb-8">
         <div className="border rounded-xl p-3 text-center">
           <div className="text-2xl font-bold">{totalTime}</div>
@@ -36,15 +41,11 @@ export default async function RecipePage({ params }: { params: { id: string } })
           <div className="text-xs text-gray-500">par portion</div>
         </div>
       </div>
-
-      {/* Temps */}
       <div className="flex gap-4 text-sm text-gray-500 mb-8">
         <span>⏱ Préparation : {recipe.prep_time_min} min</span>
         <span>🔥 Cuisson : {recipe.cook_time_min} min</span>
         <span>👥 {recipe.servings} portions</span>
       </div>
-
-      {/* Ingrédients */}
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-3">Ingrédients</h2>
         <ul className="space-y-1">
@@ -56,8 +57,6 @@ export default async function RecipePage({ params }: { params: { id: string } })
           ))}
         </ul>
       </section>
-
-      {/* Mise en place */}
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-3">🥣 Mise en place</h2>
         <ol className="space-y-2">
@@ -69,8 +68,6 @@ export default async function RecipePage({ params }: { params: { id: string } })
           ))}
         </ol>
       </section>
-
-      {/* Cuisson */}
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-3">👨‍🍳 Cuisson</h2>
         <ol className="space-y-2">
@@ -82,18 +79,14 @@ export default async function RecipePage({ params }: { params: { id: string } })
           ))}
         </ol>
       </section>
-
-      {/* Nutrition */}
       {recipe.nutrition && (
         <section className="mb-8">
           <h2 className="text-xl font-semibold mb-3">🥗 Valeurs nutritionnelles</h2>
-          <p className="text-sm text-gray-500 mb-3">% des apports journaliers recommandés par portion</p>
           <div className="space-y-2">
             {Object.entries(recipe.nutrition.vitamins || {}).map(([key, value]: [string, any]) => (
               <div key={key}>
                 <div className="flex justify-between text-sm mb-1">
-                  <span>Vitamine {key}</span>
-                  <span>{value}%</span>
+                  <span>Vitamine {key}</span><span>{value}%</span>
                 </div>
                 <div className="w-full bg-gray-100 rounded-full h-2">
                   <div className="bg-green-500 h-2 rounded-full" style={{ width: `${Math.min(value, 100)}%` }} />
@@ -103,8 +96,7 @@ export default async function RecipePage({ params }: { params: { id: string } })
             {Object.entries(recipe.nutrition.minerals || {}).map(([key, value]: [string, any]) => (
               <div key={key}>
                 <div className="flex justify-between text-sm mb-1">
-                  <span className="capitalize">{key}</span>
-                  <span>{value}%</span>
+                  <span className="capitalize">{key}</span><span>{value}%</span>
                 </div>
                 <div className="w-full bg-gray-100 rounded-full h-2">
                   <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${Math.min(value, 100)}%` }} />
