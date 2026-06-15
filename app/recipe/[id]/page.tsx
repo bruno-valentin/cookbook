@@ -3,14 +3,15 @@ import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
-export default async function RecipePage({ params }: { params: { id: string } }) {
-  const { data: recipe, error } = await supabase.from('recipes').select('*').eq('id', params.id).single()
+export default async function RecipePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const { data: recipe, error } = await supabase.from('recipes').select('*').eq('id', id).single()
 
   if (error || !recipe) return (
     <div className="p-8">
       <p>Recette introuvable.</p>
       <p className="text-sm text-red-500 mt-2">{error?.message}</p>
-      <p className="text-sm text-gray-400 mt-1">ID: {params.id}</p>
+      <p className="text-sm text-gray-400 mt-1">ID: {id}</p>
     </div>
   )
 
