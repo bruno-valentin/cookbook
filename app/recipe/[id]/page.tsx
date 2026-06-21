@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import DeleteRecipeButton from '@/app/components/DeleteRecipeButton'
+import OuAcheter from './OuAcheter'
 
 export const dynamic = 'force-dynamic'
 
@@ -59,6 +60,7 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
           ))}
         </ul>
       </section>
+      <OuAcheter ingredients={recipe.ingredients} />
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-3">🥣 Mise en place</h2>
         <ol className="space-y-2">
