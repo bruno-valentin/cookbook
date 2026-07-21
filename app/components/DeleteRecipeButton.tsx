@@ -40,7 +40,7 @@ export default function DeleteRecipeButton({ id, redirectAfter }: { id: string; 
     return (
       <button
         onClick={() => setState('confirming')}
-        className="text-sm text-gray-400 hover:text-red-500 transition"
+        className="text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 transition"
       >
         Supprimer
       </button>
